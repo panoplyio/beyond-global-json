@@ -1,0 +1,22 @@
+{
+  "name": "parse-big",
+  "version": "1.0.0",
+  "description": "Overwrites the global JSON.parse with json-bigint",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panoplyio/parse-big.git"
+  },
+  "author": "Alon Weissfeld <alon.weissfeld@panoply.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/panoplyio/parse-big/issues"
+  },
+  "homepage": "https://github.com/panoplyio/parse-big#readme",
+  "dependencies": {
+    "json-bigint": "^0.2.0"
+  }
+}
