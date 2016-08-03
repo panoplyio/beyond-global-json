@@ -4,7 +4,7 @@
   "description": "Overwrites the global JSON.parse with json-bigint",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/panoplyio/parse-big#readme",
   "dependencies": {
-    "json-bigint": "^0.2.0"
+    "bluebird": "^3.4.1",
+    "json-bigint": "^0.2.0",
+    "mocha": "^3.0.0"
   }
 }
