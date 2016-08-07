@@ -27,7 +27,7 @@ describe( 'Parse Big', function () {
 
         // add another digit for each tested value
         values = values.map( function ( val ) {
-            return quotes( val ).concat( addedDigit );
+            return val.toString().concat( addedDigit );
         })
 
         var results = [];
@@ -65,14 +65,4 @@ describe( 'Parse Big', function () {
  */
 function parse ( input ) {
     return JSON.parse( input );
-}
-
-/**
- * Quote a given input
- *
- * @param {Mixed} input - given input
- * @return {String} returns the quoted input
- */
-function quotes ( input ) {
-    return '{1}'.assign( input );
 }
