@@ -16,10 +16,10 @@
     "url": "https://github.com/panoplyio/parse-big/issues"
   },
   "homepage": "https://github.com/panoplyio/parse-big#readme",
-  "dependencies": {
-    "bluebird": "^3.4.1",
-    "json-bigint": "^0.2.0",
+  "devDependencies": {
     "mocha": "^3.0.0",
-    "sugar": "^1.4.1"
+  },
+  "dependencies": {
+    "json-bigint": "^0.2.0",
   }
 }
