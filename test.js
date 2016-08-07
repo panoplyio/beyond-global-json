@@ -11,7 +11,7 @@ describe( 'Parse Big', function () {
         var badJsonString = '{"name":"somename}';
 
         Promise.resolve( badJsonString )
-            .then( parse )
+            .then( JSON.parse )
             .catch( function ( err ) {
                 // the json-bigint library gives a different error
                 // message than the global JSON object
@@ -33,7 +33,7 @@ describe( 'Parse Big', function () {
         var results = [];
         Promise.resolve( values )
             .each( function ( val ) {
-                var parsed = parse( val );
+                var parsed = JSON.parse( val );
                 results.push( parsed );
             })
             .return( results )
@@ -56,13 +56,3 @@ describe( 'Parse Big', function () {
             })
     })
 });
-
-/**
- * Parse a given input
- *
- * @param {String} input - given input
- * @return {Mixed} returns the parsed object
- */
-function parse ( input ) {
-    return JSON.parse( input );
-}
