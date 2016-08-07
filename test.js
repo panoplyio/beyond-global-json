@@ -1,6 +1,4 @@
-require( 'sugar' );
 var assert = require( 'assert' );
-var Promise = require( 'bluebird' );
 var parseBig = require( './index' );
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
