@@ -7,7 +7,7 @@ var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
 
 describe( 'Parse Big', function () {
-    it( 'error', function ( done ) {
+    it( 'throws an error for unparsable strings', function ( done ) {
         var parsed;
         var badJsonString = '{"name":"somename}';
 
@@ -26,7 +26,7 @@ describe( 'Parse Big', function () {
         }
     })
 
-    it( 'parse', function ( done ) {
+    it( 'parses numbers beyond the safe integer limits', function ( done ) {
         var addedDigit = '1';
         var values = [ MAX_SAFE_INTEGER, MIN_SAFE_INTEGER ];
 
