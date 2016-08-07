@@ -4,7 +4,7 @@ var parseBig = require( './index' );
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
 
-describe( 'Parse Big', function () {
+describe( 'Global JSON Override', function () {
     it( 'throws an error for unparsable strings', function ( done ) {
         var parsed;
         var badJsonString = '{"name":"somename}';
