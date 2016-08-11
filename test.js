@@ -48,4 +48,27 @@ describe( 'Global JSON Override', function () {
 
         done();
     })
+
+    it( 'does not parse big numbers to objects', function ( done ) {
+        var values = [ MAX_SAFE_INTEGER, MIN_SAFE_INTEGER ];
+
+        // Construct an array of values to test. Each value is parsed
+        var testedValues = [].map.call( values, function ( val ) {
+            val = val.toString();
+            return JSON.parse( val );
+        })
+
+        // expected type
+        var expected = 'string';
+        testedValues.forEach( function ( val ) {
+
+            // When 'storeAsString' configured as true, it sohuld parse
+            // the big integers to strings and not to object representation
+            // of big numbers.
+            var type = typeof val;
+            assert.equal( type, expected );
+        })
+
+        done();
+    })
 });
