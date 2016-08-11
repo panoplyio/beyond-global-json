@@ -36,7 +36,6 @@ describe( 'Global JSON Override', function () {
         })
 
         testedValues.forEach( function ( val ) {
-            val = new String( val );
             var lastDigit = val[ val.length - 1 ];
 
             // we want to test that while the module is
