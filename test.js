@@ -1,7 +1,12 @@
 var assert = require( 'assert' );
 var parseBig = require( './index' );
 
+// json-bigint uses bignumber.js to check whether the number is
+// bigger than 15 digits to determine if it should be set as a
+// string (or 'BigNumber', in case `storeAsString` is configured false
+// to parse big integers as BigNumber objects).
 var MAX_NUMBER_LENGTH = 15;
+
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
 
@@ -79,12 +84,10 @@ describe( 'Global JSON Override', function () {
         // Construct an array of values to test. Each value is parsed
         var testedValues = [].map.call( values, function ( val ) {
             val = val.toString();
-            // json-bigint uses bignumber.js to check whether the number is
-            // bigger than 15 digits (MAX_NUMBER_LENGTH) to determine if it
-            // should be set as a string (or 'BigNumber', in case `storeAsString`
-            // is configured false to parse big integers as BigNumber objects).
-            // For the purposes of this test - we want to make sure are tested
-            // values are indeed less than 15 digits
+
+            // We want to make sure that the tested values are indeed
+            // less than 15 digits (MAX_NUMBER_LENGTH) so we can test
+            // if they are parsed as numbers
             if ( val.length > MAX_NUMBER_LENGTH ) {
                 val = val.slice( 0, MAX_NUMBER_LENGTH );
             }
