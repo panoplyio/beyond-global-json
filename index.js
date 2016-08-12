@@ -21,5 +21,4 @@ module.exports = override();
  */
 function override () {
     JSON.parse = JSONbigInt.parse;
-    JSON.stringify = JSONbigInt.stringify;
 }
