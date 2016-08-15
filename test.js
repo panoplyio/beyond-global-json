@@ -1,4 +1,6 @@
 var assert = require( 'assert' );
+var BigNumber = require( 'bignumber.js' );
+
 var parseBig = require( './index' );
 
 // json-bigint uses bignumber.js to check whether the number is
@@ -22,66 +24,72 @@ describe( 'Global JSON Override', function () {
             // message than the global JSON object
             assert.equal( err.message, 'Bad string' );
             assert.equal( err.name, 'SyntaxError' )
-            done();
         }
 
         if ( parsed ) {
             var err = new Error( 'Parsing should have failed.' );
+            done ( err );
+        } else {
+            done();
         }
     })
 
-    it( 'parses numbers beyond the safe integer limits', function ( done ) {
-        var addedDigit = '1';
-        var values = [ MAX_SAFE_INTEGER, MIN_SAFE_INTEGER ];
+    it( 'does not lose precision for parsing unsafe integers', function ( done ) {
+        var max = new BigNumber( MAX_SAFE_INTEGER );
+        var min = new BigNumber( MIN_SAFE_INTEGER );
+
+        // JSON.parse round odd numbers to evens, so we want
+        // to test values such as Number.MAX_SAFE_INTEGER + 2,
+        // which result in 9007199254740993. Same goes decimal values.
+        var values = [
+            max.plus( 2 ),
+            max.plus( 0.1 ),
+            max.plus( 0.9 ),
+            min.minus( 2 ),
+            min.minus( 0.1 ),
+            min.minus( 0.9 )
+        ];
 
         // Construct an array of values to test. Each value
-        // is concatenated with an extra digit, then parsed.
+        // is stringifed, then parsed
         var testedValues = [].map.call( values, function ( val ) {
-            var tested = val.toString().concat( addedDigit );
+            var tested = val.toString();
             return JSON.parse( tested );
         })
 
-        testedValues.forEach( function ( val ) {
-            var lastDigit = val[ val.length - 1 ];
-
-            // we want to test that while the module is
-            // required, it wouldn't use JSON.parse to
-            // round our values when they're bigger than
-            // Number.MAX_SAFE_INTEGER or smaller
-            // than Number.MIN_SAFE_INTEGER
-            assert.equal( lastDigit, addedDigit )
-        })
-
-        done();
-    })
-
-    it( 'does not parse big numbers to objects', function ( done ) {
-        var values = [ MAX_SAFE_INTEGER, MIN_SAFE_INTEGER ];
-
-        // Construct an array of values to test. Each value is parsed
-        var testedValues = [].map.call( values, function ( val ) {
-            val = val.toString();
-            return JSON.parse( val );
-        })
-
-        // expected type
-        var expected = 'string';
-        testedValues.forEach( function ( val ) {
+        var i;
+        for ( i = 0; i < testedValues.length; i += 1 ) {
+            var originalValue = values[ i ].toString();
+            var parsedValue = testedValues[ i ];
 
             // When 'storeAsString' configured as true, it sohuld parse
             // the big integers to strings and not to object representation
             // of big numbers.
-            var type = typeof val;
-            assert.equal( type, expected );
-        })
+            assert( typeof parsedValue === 'string' );
 
-        done();
+            // we want to test that numbers beyond the safe range, that
+            // are prone to precision lost with the global JSON
+            // object, are parsed correctly while the module is
+            // required
+            assert.equal( parsedValue, originalValue );
+        }
+
+        if ( i !== values.length ) {
+            var err = new Error( 'Not all values were tested.' )
+            done( err );
+        } else {
+            done();
+        }
     })
 
-    it( 'parses small integers to numbers', function ( done ) {
-        var values = [ MAX_SAFE_INTEGER, MIN_SAFE_INTEGER ]
+    it( 'parses safe integers to numbers', function ( done ) {
+        var values = [
+            MAX_SAFE_INTEGER,
+            MIN_SAFE_INTEGER
+        ]
 
-        // Construct an array of values to test. Each value is parsed
+        // Construct an array of values to test. Each value is
+        // stringified, then parsed
         var testedValues = [].map.call( values, function ( val ) {
             val = val.toString();
 
@@ -95,11 +103,8 @@ describe( 'Global JSON Override', function () {
             return JSON.parse( val );
         })
 
-        // expected type
-        var expected = 'number';
         testedValues.forEach( function ( val ) {
-            var type = typeof val;
-            assert.equal( type, expected );
+            assert( typeof val === 'number' );
         })
 
         done();
