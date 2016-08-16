@@ -13,7 +13,7 @@ var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
 
 describe( 'Global JSON Override', function () {
-    it( 'throws an error for unparsable strings', function ( done ) {
+    it( 'throws an error for unparsable strings', function () {
         var parsed;
         var badJsonString = '{"name":"somename}';
 
@@ -27,14 +27,11 @@ describe( 'Global JSON Override', function () {
         }
 
         if ( parsed ) {
-            var err = new Error( 'Parsing should have failed.' );
-            done ( err );
-        } else {
-            done();
+            throw new Error( 'Parsing should have failed.' );
         }
     })
 
-    it( 'does not lose precision for parsing unsafe integers', function ( done ) {
+    it( 'does not lose precision for parsing unsafe integers', function () {
         var max = new BigNumber( MAX_SAFE_INTEGER );
         var min = new BigNumber( MIN_SAFE_INTEGER );
 
@@ -75,14 +72,11 @@ describe( 'Global JSON Override', function () {
         }
 
         if ( i !== values.length ) {
-            var err = new Error( 'Not all values were tested.' )
-            done( err );
-        } else {
-            done();
+            throw new Error( 'Not all values were tested.' )
         }
     })
 
-    it( 'parses safe integers to numbers', function ( done ) {
+    it( 'parses safe integers to numbers', function () {
         var values = [
             MAX_SAFE_INTEGER,
             MIN_SAFE_INTEGER
@@ -106,7 +100,5 @@ describe( 'Global JSON Override', function () {
         testedValues.forEach( function ( val ) {
             assert( typeof val === 'number' );
         })
-
-        done();
     })
 });
