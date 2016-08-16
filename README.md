@@ -4,7 +4,6 @@ Javascript uses floating numbers to store all numbers. That means that past a ce
 
 global-json-override module provides a simple override of the following global JSON object methods, to handle the described above:
 * `parse`
-* `stringify`
 
 ### Usage
 

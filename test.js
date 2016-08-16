@@ -1,11 +1,19 @@
 var assert = require( 'assert' );
+var BigNumber = require( 'bignumber.js' );
+
 var parseBig = require( './index' );
+
+// json-bigint uses bignumber.js to check whether the number is
+// bigger than 15 digits to determine if it should be set as a
+// string (or 'BigNumber', in case `storeAsString` is configured false
+// to parse big integers as BigNumber objects).
+var MAX_NUMBER_LENGTH = 15;
 
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
 
 describe( 'Global JSON Override', function () {
-    it( 'throws an error for unparsable strings', function ( done ) {
+    it( 'throws an error for unparsable strings', function () {
         var parsed;
         var badJsonString = '{"name":"somename}';
 
@@ -16,37 +24,81 @@ describe( 'Global JSON Override', function () {
             // message than the global JSON object
             assert.equal( err.message, 'Bad string' );
             assert.equal( err.name, 'SyntaxError' )
-            done();
         }
 
         if ( parsed ) {
-            var err = new Error( 'Parsing should have failed.' );
+            throw new Error( 'Parsing should have failed.' );
         }
     })
 
-    it( 'parses numbers beyond the safe integer limits', function ( done ) {
-        var addedDigit = '1';
-        var values = [ MAX_SAFE_INTEGER, MIN_SAFE_INTEGER ];
+    it( 'does not lose precision for parsing unsafe integers', function () {
+        var max = new BigNumber( MAX_SAFE_INTEGER );
+        var min = new BigNumber( MIN_SAFE_INTEGER );
+
+        // JSON.parse round odd numbers to evens, so we want
+        // to test values such as Number.MAX_SAFE_INTEGER + 2,
+        // which result in 9007199254740993. Same goes decimal values.
+        var values = [
+            max.plus( 2 ),
+            max.plus( 0.1 ),
+            max.plus( 0.9 ),
+            min.minus( 2 ),
+            min.minus( 0.1 ),
+            min.minus( 0.9 )
+        ];
 
         // Construct an array of values to test. Each value
-        // is concatenated with an extra digit, then parsed.
+        // is stringifed, then parsed
         var testedValues = [].map.call( values, function ( val ) {
-            var tested = val.toString().concat( addedDigit );
+            var tested = val.toString();
             return JSON.parse( tested );
         })
 
-        testedValues.forEach( function ( val ) {
-            val = new String( val );
-            var lastDigit = val[ val.length - 1 ];
+        var i;
+        for ( i = 0; i < testedValues.length; i += 1 ) {
+            var originalValue = values[ i ].toString();
+            var parsedValue = testedValues[ i ];
 
-            // we want to test that while the module is
-            // required, it wouldn't use JSON.parse to
-            // round our values when they're bigger than
-            // Number.MAX_SAFE_INTEGER or smaller
-            // than Number.MIN_SAFE_INTEGER
-            assert.equal( lastDigit, addedDigit )
+            // When 'storeAsString' configured as true, it sohuld parse
+            // the big integers to strings and not to object representation
+            // of big numbers.
+            assert( typeof parsedValue === 'string' );
+
+            // we want to test that numbers beyond the safe range, that
+            // are prone to precision lost with the global JSON
+            // object, are parsed correctly while the module is
+            // required
+            assert.equal( parsedValue, originalValue );
+        }
+
+        if ( i !== values.length ) {
+            throw new Error( 'Not all values were tested.' )
+        }
+    })
+
+    it( 'parses safe integers to numbers', function () {
+        var values = [
+            MAX_SAFE_INTEGER,
+            MIN_SAFE_INTEGER
+        ]
+
+        // Construct an array of values to test. Each value is
+        // stringified, then parsed
+        var testedValues = [].map.call( values, function ( val ) {
+            val = val.toString();
+
+            // We want to make sure that the tested values are indeed
+            // less than 15 digits (MAX_NUMBER_LENGTH) so we can test
+            // if they are parsed as numbers
+            if ( val.length > MAX_NUMBER_LENGTH ) {
+                val = val.slice( 0, MAX_NUMBER_LENGTH );
+            }
+
+            return JSON.parse( val );
         })
 
-        done();
+        testedValues.forEach( function ( val ) {
+            assert( typeof val === 'number' );
+        })
     })
 });

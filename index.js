@@ -5,7 +5,14 @@ This is due to the fact the Javascript uses floating numbers to
 store all numbers. Therefore, past a certain point (Number.MAX_SAFE_INTEGER),
 integers will be incorrect due to the floating point percision.
  */
-var JSONbigInt = require( 'json-bigint' );
+
+// We want to convert all BigInts to be-and-stay strings, so it would not
+// 'parse' big numbers values to objects representation
+var STORE_AS_STRING = true;
+
+var JSONbigInt = require( 'json-bigint' )({
+    storeAsString: STORE_AS_STRING
+});
 
 module.exports = override();
 
@@ -14,5 +21,4 @@ module.exports = override();
  */
 function override () {
     JSON.parse = JSONbigInt.parse;
-    JSON.stringify = JSONbigInt.stringify;
 }
