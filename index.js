@@ -14,11 +14,23 @@ var JSONbigInt = require( 'json-bigint' )({
     storeAsString: STORE_AS_STRING
 });
 
-module.exports = override();
+var originalParser = JSON.parse
+
+override();
+
+module.exports.override = override;
+module.exports.restore = restore;
 
 /**
  * Overrides the global JSON methods
  */
 function override () {
     JSON.parse = JSONbigInt.parse;
+}
+
+/**
+ * Restores the original JSON methods
+ */
+function restore () {
+    JSON.parse = originalParser;
 }
