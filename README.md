@@ -8,5 +8,5 @@ global-json-override module provides a simple override of the following global J
 ### Usage
 
 ```javascript
-require( 'global-json-override' );
+require( 'global-json-override' ).override();
 ```
