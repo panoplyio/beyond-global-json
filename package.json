@@ -1,6 +1,6 @@
 {
   "name": "global-json-override",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Overwrites the global JSON.parse with json-bigint",
   "main": "index.js",
   "scripts": {
