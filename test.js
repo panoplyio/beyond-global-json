@@ -12,6 +12,8 @@ var MAX_NUMBER_LENGTH = 15;
 var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
 
+parseBig.override();
+
 describe( 'Global JSON Override', function () {
     it( 'throws an error for unparsable strings', function () {
         var parsed;
