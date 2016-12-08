@@ -16,8 +16,6 @@ var JSONbigInt = require( 'json-bigint' )({
 
 var originalParser = JSON.parse
 
-override();
-
 module.exports.override = override;
 module.exports.restore = restore;
 
